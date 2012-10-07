@@ -1,0 +1,167 @@
+<html>
+<head>
+	
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+	<script type="text/javascript">
+		/*$(document).ready(function(){
+
+				var url = 'http://bueirodorock.com.br/blog/feed/#';
+				$.get(url, function(data){
+
+						console.log("opa",data);
+				});
+		}); */
+	</script>
+	<title></title>
+
+	<style type="text/css">
+		#wrapper{width:100%; height:auto; overflow: hidden; margin:100px auto;}
+		table#grid{
+			border:solid 1px #f8f8f8;
+			padding: 0;
+			border-collapse: collapse;
+		}
+		table#grid td{
+			width: 26px;
+			height: 26px;
+			border: solid 1px #C9C9C9;
+			cursor: pointer;
+			background:url(./water.png) center center no-repeat;
+		}
+		table#grid td:hover{background-color:#e9e9e9;}
+	</style>
+</head>
+<body>
+
+	
+	<div id="wrapper">
+		
+		<table id="grid">
+
+		</table>		
+	</div>
+</body>
+
+<script>
+		
+		var grid = document.getElementById('grid');
+		var bombs = new Array();
+		var selected = null;
+
+		function newTdInfo(){
+
+			var object = new Object();
+			object.y = null;
+			object.x = null;
+
+			return object;
+		}
+
+		var currentRow = 0 ;
+		var currentCol = 0;
+		function createField(width, height){
+
+				
+				var tr = null;
+				var x = 0;
+				var y = 0;
+				for(var i = 0; i < height; i++){
+						tr = document.createElement('tr');						
+						
+						var tdInfo = new Object();
+						
+						for(var j = 0; j < width; j++ ){
+							var tdElement = document.createElement('td');
+
+							tdInfo.x = tdElement.cellIndex;
+							tdInfo.y = i;	
+
+							tdElement.onclick = function(el){
+
+								var currentElement = el.currentTarget;
+								var parentElement = currentElement.parentElement;
+								
+								currentCol = currentElement.cellIndex;
+								currentRow = parentElement.sectionRowIndex;
+
+								verifyArea(currentRow,currentCol);
+							}
+							tdInfo = new Object();
+							tr.appendChild(tdElement);
+						}
+
+						grid.appendChild(tr);
+						y++;
+						x++;
+				}
+		}
+
+
+		function verifyArea(currentRow, currentCol){
+
+				grid.getElementsByTagName('tr')[currentRow].children[currentCol+1].style.backgroundColor="#c00";
+				grid.getElementsByTagName('tr')[currentRow].children[currentCol-1].style.backgroundColor="#c00";
+
+
+				var hasRowAbove = grid.getElementsByTagName('tr')[currentRow-1] != null;
+				var hasRowBelow = grid.getElementsByTagName('tr')[currentRow+1] != null;
+
+				if(hasRowAbove){
+
+					grid.getElementsByTagName('tr')[currentRow-1].children[currentCol].style.backgroundColor="#c00";
+					grid.getElementsByTagName('tr')[currentRow-1].children[currentCol+1].style.backgroundColor="#c00";
+					grid.getElementsByTagName('tr')[currentRow-1].children[currentCol-1].style.backgroundColor="#c00";
+				}
+				
+
+				grid.getElementsByTagName('tr')[currentRow+1].children[currentCol].style.backgroundColor="#c00";
+				grid.getElementsByTagName('tr')[currentRow+1].children[currentCol+1].style.backgroundColor="#c00";
+				grid.getElementsByTagName('tr')[currentRow+1].children[currentCol-1].style.backgroundColor="#c00";
+
+				
+		}
+
+		function plantTheBomb(bombNumber){
+
+			var tmp = null;
+
+			for(i = 0; i <= bombNumber; i++){
+
+				var bombPosition = Math.floor(Math.random()*rows);
+
+				if(tmp == bombPosition){
+					bombPosition = Math.floor(Math.random()*rows);
+				}
+				
+				grid.getElementsByTagName('td')[bombPosition].style.backgroundColor="#ccc";
+				grid.getElementsByTagName('td')[bombPosition].className="hasBomb";
+
+				tmp = bombPosition;
+
+				var bomInfo = new Object();
+				bomInfo.position = bombPosition;
+
+				bombs.push(bomInfo);
+			}
+		}
+
+		createField(15,15);
+
+		var lines = grid.getElementsByTagName('tr').length;
+		var rows = grid.getElementsByTagName('td').length;
+
+		plantTheBomb(10);
+
+		
+		/*
+			anterior = a - 1
+			próxima = a  + 1
+
+			abaixo  = a * (a*2)
+
+			(atual + 15) - 10
+		*/
+
+		grid.style.margin="0 auto";
+</script>
+</html>
